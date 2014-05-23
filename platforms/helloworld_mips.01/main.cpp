@@ -22,21 +22,27 @@ const char *archc_options="-abi -dy ";
 #include  <systemc.h>
 #include  "mips1.H"
 #include  "ac_tlm_mem.h"
+#include  "ac_tlm_bus.h"
 
 using user::ac_tlm_mem;
+using user::ac_tlm_bus;
 
 int sc_main(int ac, char *av[])
 {
 
   //!  ISA simulator
   mips1 mips1_proc1("mips1");
+
   ac_tlm_mem mem("mem");
+  ac_tlm_bus mem_bus("bus");
 
 #ifdef AC_DEBUG
   ac_trace("mips1_proc1.trace");
 #endif 
 
-  mips1_proc1.DM_port(mem.target_export);
+  mips1_proc1.DM_port(mem_bus.target_export[0]);
+
+  mem_bus.DM_port(mem.target_export);
 
   mips1_proc1.init(ac, av);
   cerr << endl;
