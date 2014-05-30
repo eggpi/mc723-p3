@@ -27,11 +27,22 @@ const char *archc_options="-abi -dy ";
 using user::ac_tlm_mem;
 using user::ac_tlm_bus;
 
+char **
+duplicate_argv(int argc, char **argv) {
+  char **new_argv = (char **) malloc(argc * sizeof(char *));
+  for (int i = 0; i < argc; ++i) {
+    new_argv[i] = strdup(argv[i]);
+  }
+
+  return new_argv;
+}
+
 int sc_main(int ac, char *av[])
 {
 
   //!  ISA simulator
   mips1 mips1_proc1("mips1");
+  mips1 mips1_proc2("mips2");
 
   ac_tlm_mem mem("mem");
   ac_tlm_bus mem_bus("bus");
@@ -41,12 +52,16 @@ int sc_main(int ac, char *av[])
 #endif 
 
   mips1_proc1.DM_port(mem_bus.target_export[0]);
+  mips1_proc2.DM_port(mem_bus.target_export[1]);
 
   mem_bus.DM_port(mem.target_export);
 
-  mips1_proc1.init(ac, av);
+  mips1_proc1.init(ac, duplicate_argv(ac, av));
+  mips1_proc2.init(ac, duplicate_argv(ac, av));
   cerr << endl;
 
+  mips1_proc1.ac_wait_sig = 0; // bootstrap processor
+  mips1_proc2.ac_wait_sig = 1;
   sc_start();
 
   mips1_proc1.PrintStat();
