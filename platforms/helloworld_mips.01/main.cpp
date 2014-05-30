@@ -43,6 +43,12 @@ int sc_main(int ac, char *av[])
   //!  ISA simulator
   mips1 mips1_proc1("mips1");
   mips1 mips1_proc2("mips2");
+  mips1 mips1_proc3("mips3");
+  mips1 mips1_proc4("mips4");
+  mips1 mips1_proc5("mips5");
+  mips1 mips1_proc6("mips6");
+  mips1 mips1_proc7("mips7");
+  mips1 mips1_proc8("mips8");
 
   ac_tlm_mem mem("mem");
   ac_tlm_bus mem_bus("bus");
@@ -53,15 +59,33 @@ int sc_main(int ac, char *av[])
 
   mips1_proc1.DM_port(mem_bus.target_export[0]);
   mips1_proc2.DM_port(mem_bus.target_export[1]);
+  mips1_proc3.DM_port(mem_bus.target_export[2]);
+  mips1_proc4.DM_port(mem_bus.target_export[3]);
+  mips1_proc5.DM_port(mem_bus.target_export[4]);
+  mips1_proc6.DM_port(mem_bus.target_export[5]);
+  mips1_proc7.DM_port(mem_bus.target_export[6]);
+  mips1_proc8.DM_port(mem_bus.target_export[7]);
 
   mem_bus.DM_port(mem.target_export);
 
   mips1_proc1.init(ac, duplicate_argv(ac, av));
   mips1_proc2.init(ac, duplicate_argv(ac, av));
+  mips1_proc3.init(ac, duplicate_argv(ac, av));
+  mips1_proc4.init(ac, duplicate_argv(ac, av));
+  mips1_proc5.init(ac, duplicate_argv(ac, av));
+  mips1_proc6.init(ac, duplicate_argv(ac, av));
+  mips1_proc7.init(ac, duplicate_argv(ac, av));
+  mips1_proc8.init(ac, duplicate_argv(ac, av));
   cerr << endl;
 
   mips1_proc1.ac_wait_sig = 0; // bootstrap processor
   mips1_proc2.ac_wait_sig = 1;
+  mips1_proc3.ac_wait_sig = 1;
+  mips1_proc4.ac_wait_sig = 1;
+  mips1_proc5.ac_wait_sig = 1;
+  mips1_proc6.ac_wait_sig = 1;
+  mips1_proc7.ac_wait_sig = 1;
+  mips1_proc8.ac_wait_sig = 1;
   sc_start();
 
   mips1_proc1.PrintStat();
