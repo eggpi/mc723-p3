@@ -25,7 +25,7 @@ public:
   ac_tlm_port DM_port;
 
   /// Exposed port with ArchC interface
-  sc_export< ac_tlm_transport_if > target_export[4];
+  sc_export< ac_tlm_transport_if > target_export[8];
 
   /**
    * Implementation of TLM transport method that
