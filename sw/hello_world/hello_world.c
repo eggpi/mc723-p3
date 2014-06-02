@@ -1,11 +1,26 @@
+#include <stdint.h>
 #include <stdio.h>
 
-int main(int argc, char *argv[]){
-  int i;
-  for(i=0;i<10;i++)
-    printf("Hi from processor MIPS!\n");
+static int i = 0;
+static char *message[] = {
+  "this ",
+  "is ",
+  "not ",
+  "an ",
+  "eight ",
+  "part ",
+  "message",
+  "!!!\n",
+};
 
-  exit(0); // To avoid cross-compiler exit routine
-  return 0; // Never executed, just for compatibility
+int main(int argc, char *argv[]){
+  uint32_t *p =  (uint32_t *) 0xFFFFFF;
+
+  printf("%s", message[i++]);
+  if (i < 8) *p = (uint32_t) 1 << i;
+  else {
+    exit(0); // To avoid cross-compiler exit routine
+    return 0; // Never executed, just for compatibility
+  }
 }
 

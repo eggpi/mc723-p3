@@ -23,9 +23,20 @@ const char *archc_options="-abi -dy ";
 #include  "mips1.H"
 #include  "ac_tlm_mem.h"
 #include  "ac_tlm_bus.h"
+#include  "ac_tlm_protocol.H"
 
 using user::ac_tlm_mem;
 using user::ac_tlm_bus;
+
+static mips1* mips1_proc1;
+static mips1* mips1_proc2;
+static mips1* mips1_proc3;
+static mips1* mips1_proc4;
+static mips1* mips1_proc5;
+static mips1* mips1_proc6;
+static mips1* mips1_proc7;
+static mips1* mips1_proc8;
+
 
 char **
 duplicate_argv(int argc, char **argv) {
@@ -37,68 +48,113 @@ duplicate_argv(int argc, char **argv) {
   return new_argv;
 }
 
+ac_tlm_rsp wake_up_processor( const ac_tlm_req &request ) {
+    ac_tlm_rsp response;
+
+    if (request.addr != 0xFFFFFF) {
+      response.status = ERROR;
+      return response;
+    }
+
+    uint8_t mask = (request.data & 0xFF000000) >> 24;
+    if (mask & 1) {// acordar processador 1
+      mips1_proc1->ac_wait_sig = 0;
+    }
+
+    if (mask & (1 << 1)) {// acordar processador 2
+      mips1_proc2->ac_wait_sig = 0;
+    }
+    
+    if (mask & (1 << 2)) {// acordar processador 3
+      mips1_proc3->ac_wait_sig = 0;
+    }
+    
+    if (mask & (1 << 3)) {// acordar processador 4
+      mips1_proc4->ac_wait_sig = 0;
+    }
+    
+    if (mask & (1 << 4)) {// acordar processador 5
+      mips1_proc5->ac_wait_sig = 0;
+    }
+    
+    if (mask & (1 << 5)) {// acordar processador 6
+      mips1_proc6->ac_wait_sig = 0;
+    }
+    
+    if (mask & (1 << 6)) {// acordar processador 7
+      mips1_proc7->ac_wait_sig = 0;
+    }
+    
+    if (mask & (1 << 7)) {// acordar processador 8
+      mips1_proc8->ac_wait_sig = 0;
+    }
+
+    response.status = SUCCESS;
+    return response;
+}
+
 int sc_main(int ac, char *av[])
 {
 
   //!  ISA simulator
-  mips1 mips1_proc1("mips1");
-  mips1 mips1_proc2("mips2");
-  mips1 mips1_proc3("mips3");
-  mips1 mips1_proc4("mips4");
-  mips1 mips1_proc5("mips5");
-  mips1 mips1_proc6("mips6");
-  mips1 mips1_proc7("mips7");
-  mips1 mips1_proc8("mips8");
+  mips1_proc1 = new mips1("mips1");
+  mips1_proc2 = new mips1("mips2");
+  mips1_proc3 = new mips1("mips3");
+  mips1_proc4 = new mips1("mips4");
+  mips1_proc5 = new mips1("mips5");
+  mips1_proc6 = new mips1("mips6");
+  mips1_proc7 = new mips1("mips7");
+  mips1_proc8 = new mips1("mips8");
 
   ac_tlm_mem mem("mem");
-  ac_tlm_bus mem_bus("bus");
+  ac_tlm_bus mem_bus("bus", wake_up_processor);
 
 #ifdef AC_DEBUG
   ac_trace("mips1_proc1.trace");
 #endif 
 
-  mips1_proc1.DM_port(mem_bus.target_export[0]);
-  mips1_proc2.DM_port(mem_bus.target_export[1]);
-  mips1_proc3.DM_port(mem_bus.target_export[2]);
-  mips1_proc4.DM_port(mem_bus.target_export[3]);
-  mips1_proc5.DM_port(mem_bus.target_export[4]);
-  mips1_proc6.DM_port(mem_bus.target_export[5]);
-  mips1_proc7.DM_port(mem_bus.target_export[6]);
-  mips1_proc8.DM_port(mem_bus.target_export[7]);
+  mips1_proc1->DM_port(mem_bus.target_export[0]);
+  mips1_proc2->DM_port(mem_bus.target_export[1]);
+  mips1_proc3->DM_port(mem_bus.target_export[2]);
+  mips1_proc4->DM_port(mem_bus.target_export[3]);
+  mips1_proc5->DM_port(mem_bus.target_export[4]);
+  mips1_proc6->DM_port(mem_bus.target_export[5]);
+  mips1_proc7->DM_port(mem_bus.target_export[6]);
+  mips1_proc8->DM_port(mem_bus.target_export[7]);
 
   mem_bus.DM_port(mem.target_export);
 
-  mips1_proc1.init(ac, duplicate_argv(ac, av));
-  mips1_proc2.init(ac, duplicate_argv(ac, av));
-  mips1_proc3.init(ac, duplicate_argv(ac, av));
-  mips1_proc4.init(ac, duplicate_argv(ac, av));
-  mips1_proc5.init(ac, duplicate_argv(ac, av));
-  mips1_proc6.init(ac, duplicate_argv(ac, av));
-  mips1_proc7.init(ac, duplicate_argv(ac, av));
-  mips1_proc8.init(ac, duplicate_argv(ac, av));
+  mips1_proc1->init(ac, duplicate_argv(ac, av));
+  mips1_proc2->init(ac, duplicate_argv(ac, av));
+  mips1_proc3->init(ac, duplicate_argv(ac, av));
+  mips1_proc4->init(ac, duplicate_argv(ac, av));
+  mips1_proc5->init(ac, duplicate_argv(ac, av));
+  mips1_proc6->init(ac, duplicate_argv(ac, av));
+  mips1_proc7->init(ac, duplicate_argv(ac, av));
+  mips1_proc8->init(ac, duplicate_argv(ac, av));
   cerr << endl;
 
-  mips1_proc1.ac_wait_sig = 0; // bootstrap processor
-  mips1_proc2.ac_wait_sig = 1;
-  mips1_proc3.ac_wait_sig = 1;
-  mips1_proc4.ac_wait_sig = 1;
-  mips1_proc5.ac_wait_sig = 1;
-  mips1_proc6.ac_wait_sig = 1;
-  mips1_proc7.ac_wait_sig = 1;
-  mips1_proc8.ac_wait_sig = 1;
+  mips1_proc1->ac_wait_sig = 0; // bootstrap processor
+  mips1_proc2->ac_wait_sig = 1;
+  mips1_proc3->ac_wait_sig = 1;
+  mips1_proc4->ac_wait_sig = 1;
+  mips1_proc5->ac_wait_sig = 1;
+  mips1_proc6->ac_wait_sig = 1;
+  mips1_proc7->ac_wait_sig = 1;
+  mips1_proc8->ac_wait_sig = 1;
   sc_start();
 
-  mips1_proc1.PrintStat();
+  mips1_proc1->PrintStat();
   cerr << endl;
 
 #ifdef AC_STATS
-  mips1_proc1.ac_sim_stats.time = sc_simulation_time();
-  mips1_proc1.ac_sim_stats.print();
+  mips1_proc1->ac_sim_stats.time = sc_simulation_time();
+  mips1_proc1->ac_sim_stats.print();
 #endif 
 
 #ifdef AC_DEBUG
   ac_close_trace();
 #endif 
 
-  return mips1_proc1.ac_exit_status;
+  return mips1_proc1->ac_exit_status;
 }

@@ -27,6 +27,9 @@ public:
   /// Exposed port with ArchC interface
   sc_export< ac_tlm_transport_if > target_export[8];
 
+  ac_tlm_rsp (*mem_access_callback)(const ac_tlm_req &);
+  
+  
   /**
    * Implementation of TLM transport method that
    * handle packets of the protocol doing apropriate actions.
@@ -35,6 +38,8 @@ public:
    * @return A response packet to be send
   */
   ac_tlm_rsp transport( const ac_tlm_req &request ) {
+    ac_tlm_rsp response = mem_access_callback(request);
+    if (response.status == SUCCESS) return response;
     return DM_port->transport(request);
   }
 
@@ -42,7 +47,7 @@ public:
   /**
    * Default constructor.
    */
-  ac_tlm_bus(sc_module_name module_name);
+  ac_tlm_bus(sc_module_name module_name, ac_tlm_rsp (*mem_access_callback)(const ac_tlm_req &));
 
   /**
    * Default destructor.
