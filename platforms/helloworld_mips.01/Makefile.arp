@@ -4,7 +4,7 @@
 
 include defs.arp
 
-TARGET=helloworld_mips.01
+TARGET=matrix_mult.01
 EXE = $(TARGET).x
 
 SRCS := main.cpp
@@ -24,7 +24,7 @@ main.o:
 all: $(EXE)
 #------------------------------------------------------
 run: all
-	./$(EXE) --load=hello_world.x
+	./$(EXE) --load=matrix_mult.x
 #------------------------------------------------------
 clean:
 	rm -f $(OBJS) $(EXE) *~ *.o
