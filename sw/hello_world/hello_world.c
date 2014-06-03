@@ -14,7 +14,7 @@ static char *message[] = {
 };
 
 int main(int argc, char *argv[]){
-  uint32_t *p =  (uint32_t *) 0xFFFFFF;
+  uint32_t *p =  (uint32_t *) 0xFFFFFFFF;
 
   printf("%s", message[i++]);
   if (i < 8) *p = (uint32_t) 1 << i;

@@ -51,7 +51,7 @@ duplicate_argv(int argc, char **argv) {
 ac_tlm_rsp wake_up_processor( const ac_tlm_req &request ) {
     ac_tlm_rsp response;
 
-    if (request.addr != 0xFFFFFF) {
+    if (request.addr != 0xFFFFFFFF) {
       response.status = ERROR;
       return response;
     }
