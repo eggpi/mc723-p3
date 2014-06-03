@@ -156,5 +156,15 @@ int sc_main(int ac, char *av[])
   ac_close_trace();
 #endif 
 
-  return mips1_proc1->ac_exit_status;
+  int retval = mips1_proc1->ac_exit_status;
+  delete mips1_proc1;
+  delete mips1_proc2;
+  delete mips1_proc3;
+  delete mips1_proc4;
+  delete mips1_proc5;
+  delete mips1_proc6;
+  delete mips1_proc7;
+  delete mips1_proc8;
+
+  return retval;
 }
