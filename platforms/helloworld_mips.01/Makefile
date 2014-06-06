@@ -4,7 +4,7 @@
 
 include defs.arp
 
-TARGET=matrix_mult.01
+TARGET=basicmath.01
 EXE = $(TARGET).x
 
 SRCS := main.cpp
@@ -24,7 +24,7 @@ main.o:
 all: $(EXE)
 #------------------------------------------------------
 run: all
-	./$(EXE) --load=matrix_mult.x
+	./$(EXE) --load=basicmath.x 2 6 2
 #------------------------------------------------------
 clean:
 	rm -f $(OBJS) $(EXE) *~ *.o

@@ -1,0 +1,24 @@
+CC = mips-elf-gcc
+CFLAGS = -msoft-float -specs=archc
+LDFLAGS = -lm -lpthread
+
+TARGET = basicmath.x
+INC_DIR := -I.
+
+SRCS = parallel_basicmath.c   rad2deg.c  cubic.c   isqrt.c
+OBJS := $(SRCS:.c=.o)
+
+#------------------------------------------------------
+all: $(OBJS)
+	$(CC) $(OBJS) $(CFLAGS) -o $(TARGET) $(LDFLAGS)
+#------------------------------------------------------
+clean:
+	rm -f *.o *~ $(TARGET)
+#------------------------------------------------------
+distclean: clean
+#------------------------------------------------------
+bin:
+	tar xzf basicmath-bin.tgz
+#------------------------------------------------------
+.c.o:
+	$(CC) -c $(CFLAGS) $(INC_DIR) -c $<
