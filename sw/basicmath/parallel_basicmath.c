@@ -141,7 +141,7 @@ void intializeLimits(){
    }else if (data_set_type==SMALL_DATA_SET){
   	   //Initialization of integer type limits
 	  	_ilim._start=0;
-	  	_ilim._end=500*ONE_MEGA_NUMBERS;
+	  	_ilim._end=ONE_MEGA_NUMBERS;
 	  	_ilim._offset=1;
 	  	
 	  	//Initialization of unsigned long type limits
