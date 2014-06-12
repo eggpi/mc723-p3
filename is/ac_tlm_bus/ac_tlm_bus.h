@@ -24,6 +24,9 @@ public:
   // Memory communication port
   ac_tlm_port DM_port;
 
+  // Software offloading communication port
+  ac_tlm_port offloading_port;
+  
   /// Exposed port with ArchC interface
   sc_export< ac_tlm_transport_if > target_export[8];
 
@@ -40,7 +43,12 @@ public:
   ac_tlm_rsp transport( const ac_tlm_req &request ) {
     ac_tlm_rsp response = mem_access_callback(request);
     if (response.status == SUCCESS) return response;
-    return DM_port->transport(request);
+    
+    if(request.addr == 0xEEEEEEEE)
+      return offloading_port->transport(request);
+        
+    else
+      return DM_port->transport(request);
   }
 
 

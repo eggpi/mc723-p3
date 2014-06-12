@@ -203,16 +203,18 @@ void solveCubicEquations(int workerID){
 
 void calcISqrt(int workerID){
 	int index;
-	struct int_sqrt q;
 		
 	printf("********* CALCULATE INTEGER SQR ROOTS : Worker %d  ***********\n",workerID+1);
     
   for (index = _ilimParams[workerID]._start; index < _ilimParams[workerID]._end; index+=_ilim._offset)
     {
-      usqrt(index, &q);
-			// remainder differs on some machines
-			if (PRINT)
-     			printf("sqrt(%3d) = %2d\n",index, q.sqrt);
+      
+      uint32_t *offloading =  (uint32_t *) 0xEEEEEEEE;
+      *offloading = (uint32_t) index;
+      uint32_t result = *offloading;
+     
+      //usqrt(index, &q);
+			
     }//end-for
 	
 }
@@ -225,7 +227,12 @@ void calcULSqrt(int workerID){
   
   for (l =_ullimParams[workerID]._start ; l <_ullimParams[workerID]._end; l+=_ullim._offset)
     {  
-    	 usqrt(l, &q);
+        
+        uint32_t *offloading =  (uint32_t *) 0xEEEEEEEE;
+        *offloading = (uint32_t) l;
+        uint32_t result = *offloading;
+   
+    	 //usqrt(l, &q);
     	 if (PRINT)
 	 		 		 printf("sqrt(%lX) = %X\n", l, q.sqrt);
     }
@@ -417,6 +424,20 @@ int main(int argc,char *argv[])
 	 char *strMathOpID;
 	 char *dataSetType;
 
+   /*
+   static int offl = 1;
+   if (offl == 1) {
+    uint32_t *ol =  (uint32_t *) 0xEEEEEEEE;
+    *ol = (uint32_t) 0x00FFDDEE;
+    printf("====%p====", *ol);
+    
+    struct int_sqrt q;
+    usqrt(0x00FFDDEE, &q);
+    printf("==%d==%d==", q.sqrt, q.frac);
+   }
+   offl++;
+   */
+   
      if (pthread_create_lock == 1) {
          pthread_start_function_t this_function = next_start_function;
          void *this_args = next_start_arg;

@@ -23,10 +23,12 @@ const char *archc_options="-abi -dy ";
 #include  "mips1.H"
 #include  "ac_tlm_mem.h"
 #include  "ac_tlm_bus.h"
+#include  "ac_tlm_offloading.h"
 #include  "ac_tlm_protocol.H"
 
 using user::ac_tlm_mem;
 using user::ac_tlm_bus;
+using user::ac_tlm_offloading;
 
 static mips1* mips1_proc1;
 static mips1* mips1_proc2;
@@ -108,7 +110,8 @@ int sc_main(int ac, char *av[])
 
   ac_tlm_mem mem("mem");
   ac_tlm_bus mem_bus("bus", wake_up_processor);
-
+  ac_tlm_offloading offl("offloading");
+  
 #ifdef AC_DEBUG
   ac_trace("mips1_proc1.trace");
 #endif 
@@ -123,7 +126,8 @@ int sc_main(int ac, char *av[])
   mips1_proc8->DM_port(mem_bus.target_export[7]);
 
   mem_bus.DM_port(mem.target_export);
-
+  mem_bus.offloading_port(offl.target_export);
+  
   mips1_proc1->init(ac, duplicate_argv(ac, av));
   mips1_proc2->init(ac, duplicate_argv(ac, av));
   mips1_proc3->init(ac, duplicate_argv(ac, av));

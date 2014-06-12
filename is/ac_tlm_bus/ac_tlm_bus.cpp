@@ -9,6 +9,7 @@ using user::ac_tlm_bus;
 ac_tlm_bus::ac_tlm_bus(sc_module_name module_name, ac_tlm_rsp (*mem_access_callback)(const ac_tlm_req &)) :
   sc_module(module_name),
   DM_port("DM_port", 5242880U),
+  offloading_port("offloading_port", 5242880U),
   mem_access_callback(mem_access_callback)
 {
     /// Binds target_export to the memory
