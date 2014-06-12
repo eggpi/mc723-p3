@@ -424,7 +424,7 @@ int main(int argc,char *argv[])
          pthread_create_lock = 0;
          this_function(this_args);
          finished_threads++;
-         exit(0);
+         //exit(0);
          return 0;
      }
 		
@@ -506,5 +506,6 @@ int main(int argc,char *argv[])
 	puts("Finish Working");
 	
     
+ exit(0);
  return 0;
 }
